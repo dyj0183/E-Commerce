@@ -9,6 +9,8 @@ const app = express();
 
 // this will parse the request data, and call next() 
 app.use(express.urlencoded({ extended: false}));
+//register a static folder, so that we can use the css files directly from HTML pages in our public folder 
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRoutes); // only routes that start with /admin will go into the adminRoutes
 app.use(shopRoutes);
