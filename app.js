@@ -2,8 +2,8 @@ const path = require('path');
 
 const express = require('express');
 
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
+const adminData = require('./routes/admin');
+const shopData = require('./routes/shop');
 
 const app = express();
 
@@ -12,8 +12,8 @@ app.use(express.urlencoded({ extended: false}));
 //register a static folder, so that we can use the css files directly from HTML pages in our public folder 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin', adminRoutes); // only routes that start with /admin will go into the adminRoutes
-app.use(shopRoutes);
+app.use('/admin', adminData.routes); // only routes that start with /admin will go into the adminRoutes
+app.use(shopData.routes);
 
 // handle 404 page and wrong url
 app.use('/', (req, res, next) => {
