@@ -11,14 +11,17 @@ const products = [];
 
 // /admin/add-product, GET method
 router.get('/add-product', (req, res, next) => {
-    res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    res.render('add-product', {
+        pageTitle: 'Add-Product'
+    })
+
+    //res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
 })
 
 // /admin/add-product, POST method
 router.post('/add-product', (req, res, next) => {
   
     products.push({title: req.body.title});
-    //console.log(req.body);
     res.redirect('/');
    
     //console.log("This is my product page");
