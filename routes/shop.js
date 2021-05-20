@@ -9,8 +9,12 @@ const router = express.Router();
 const adminData = require('./admin');
 
 router.get('/', (req, res, next) => {
-    console.log(adminData.products);
-    res.sendFile(path.join(rootDir, 'views', 'shop.html')); // __dirname points to the folder we are working on
+    const products = adminData.products;
+    res.render('shop', {
+        products: products,
+        pageTitle: 'Shop'
+    })
+    //res.sendFile(path.join(rootDir, 'views', 'shop.html')); // __dirname points to the folder we are working on
 });
 
 // module.exports = router;
