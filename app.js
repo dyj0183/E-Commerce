@@ -7,6 +7,9 @@ const shopData = require('./routes/shop');
 
 const app = express();
 
+app.set('view engine', 'ejs'); // set up the template engine ejs
+app.set('views', 'views');
+
 // this will parse the request data, and call next() 
 app.use(express.urlencoded({ extended: false}));
 //register a static folder, so that we can use the css files directly from HTML pages in our public folder 
