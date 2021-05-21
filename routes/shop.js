@@ -6,17 +6,9 @@ const rootDir = require('../util/path');
 
 const router = express.Router();
 
-const adminData = require('./admin');
+const productsController = require('../controllers/products');
 
-router.get('/', (req, res, next) => {
-    const products = adminData.products;
-    res.render('shop', {
-        products: products,
-        pageTitle: 'Shop',
-        path: '/'
-    })
-    //res.sendFile(path.join(rootDir, 'views', 'shop.html')); // __dirname points to the folder we are working on
-});
+router.get('/', productsController.getProducts);
 
 // module.exports = router;
 exports.routes = router;
