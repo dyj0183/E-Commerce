@@ -14,5 +14,5 @@ router.get('/add-product', productsController.getAddProduct);
 // /admin/add-product, POST method
 router.post('/add-product', productsController.postAddProduct);
 
-// module.exports = router;
-exports.routes = router;
+// export this back to the app.js
+module.exports = router;

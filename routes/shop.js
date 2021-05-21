@@ -10,6 +10,7 @@ const productsController = require('../controllers/products');
 
 router.get('/', productsController.getProducts);
 
-// module.exports = router;
-exports.routes = router;
+// export the router back to app.js
+module.exports = router;
+
 
