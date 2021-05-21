@@ -12,7 +12,8 @@ router.get('/', (req, res, next) => {
     const products = adminData.products;
     res.render('shop', {
         products: products,
-        pageTitle: 'Shop'
+        pageTitle: 'Shop',
+        path: '/'
     })
     //res.sendFile(path.join(rootDir, 'views', 'shop.html')); // __dirname points to the folder we are working on
 });
