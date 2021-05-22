@@ -10,6 +10,7 @@ module.exports = class Product {
     }
 
     save() {
+        this.id = Math.random().toString();
         const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
         fs.readFile(p, (err, fileContent) => {
@@ -40,6 +41,23 @@ module.exports = class Product {
             }
             cb(JSON.parse(fileContent));
             // return JSON.parse(fileContent);
-        })
+        });
+    }
+
+    static findById(id, anotherCB) {
+        const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+        let cb;
+
+        fs.readFile(p, (err, fileContent) => {
+            if (err) {
+                cb([]);
+            }
+            cb(JSON.parse(fileContent));
+        });
+
+        cb = (products => {
+            const product = products.find(p => p.id === id); // javascript find() method will run through all the products and if the id matches, then it will return the product
+            anotherCB(product);
+        });
     }
 }

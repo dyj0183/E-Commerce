@@ -24,6 +24,20 @@ exports.getProductList = (req, res, next) => {
     });
 }
 
+exports.getOneProduct = (req, res, next) => {
+    const productId = req.params.productId // we can get the ID from "productId" cause we set up the name in the shop routes
+    Product.findById(productId, product => {
+
+        console.log(product);
+        // res.render('shop/product-list', {
+        //     products: products,
+        //     pageTitle: 'Shop Product List',
+        //     path: '/product-list'
+        // })
+    });
+    res.redirect('/');
+}
+
 exports.getCart = (req, res, next) => {
     res.render('shop/cart', {
         pageTitle: 'Shop Cart',
