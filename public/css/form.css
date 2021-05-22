@@ -5,12 +5,14 @@
 }
 
 .form-control label,
-.form-control input {
+.form-control input,
+.form-control textarea {
     display: block;
     width: 100%;
 }
 
-.form-control input {
+.form-control input,
+.form-control textarea {
     border: 1px solid block;
     border-radius: 2px;
     margin: 3px 0px;;

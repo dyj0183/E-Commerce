@@ -8,7 +8,7 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    const product = new Product(req.body.title); // instantiate a new product object
+    const product = new Product(req.body.title, req.body.imageUrl, req.body.price, req.body.description); // instantiate a new product object
     product.save();
     // products.push({
     //     title: req.body.title

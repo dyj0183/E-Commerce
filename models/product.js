@@ -2,8 +2,11 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = class Product {
-    constructor(newTitle) {
+    constructor(newTitle, newImageUrl, newPrice, newDescription) {
         this.title = newTitle;
+        this.imageUrl = newImageUrl;
+        this.price = newPrice;
+        this.description = newDescription;
     }
 
     save() {
@@ -18,6 +21,7 @@ module.exports = class Product {
             products.push(this);
 
             fs.writeFile(p, JSON.stringify(products), (err) => {
+                console.log("write data into file successfully!");
                 console.log(err);
             });
         });
