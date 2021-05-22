@@ -1,10 +1,9 @@
-// save all the products logic here whether it is for admin or shop
 
 const Product = require('../models/product'); // import the Product class from models 
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
-        pageTitle: 'Add-Product',
+        pageTitle: 'Admin Add-Product',
         path: '/admin/add-product'
     });
 }
@@ -20,13 +19,15 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll((products) => {
+    res.render('admin/products', {
+        pageTitle: 'Admin Products',
+        path: '/admin/products'
+    })
+}
 
-        res.render('shop/product-list', {
-            products: products,
-            pageTitle: 'product-list',
-            path: '/'
-        })
-
-    });
+exports.getEditProduct = (req, res, next) => {
+    res.render('admin/edit-product', {
+        pageTitle: 'Admin Edit Product',
+        path: '/admin/edit-product'
+    })
 }
