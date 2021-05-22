@@ -1,4 +1,3 @@
-
 const Product = require('../models/product'); // import the Product class from models 
 
 exports.getAddProduct = (req, res, next) => {
@@ -9,7 +8,6 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-
     const product = new Product(req.body.title); // instantiate a new product object
     product.save();
     // products.push({
