@@ -43,3 +43,7 @@ main {
 .main-header__item a.active {
     color: rgb(233, 78, 78);
 }   
+
+.center {
+    text-align: center;
+}

@@ -6,7 +6,7 @@ exports.getIndex = (req, res, next) => {
         res.render('shop/index', {
             products: products,
             pageTitle: 'Shop Index',
-            path: '/'
+            path: '/' // the path here is used to help users know which page they are viewing (the active class we set up)
         })
 
     });
@@ -29,13 +29,13 @@ exports.getOneProduct = (req, res, next) => {
     Product.findById(productId, product => {
 
         console.log(product);
-        // res.render('shop/product-list', {
-        //     products: products,
-        //     pageTitle: 'Shop Product List',
-        //     path: '/product-list'
-        // })
+
+        res.render('shop/product-detail', {
+            product: product,
+            pageTitle: 'Shop Product Detail',
+            path: '/product-list'
+        })
     });
-    res.redirect('/');
 }
 
 exports.getCart = (req, res, next) => {
