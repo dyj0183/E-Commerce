@@ -23,4 +23,6 @@ app.use(shopRoutes);
 // handle 404 page and wrong url
 app.use('/', errorController.get404Error)
 
-app.listen(3000);
+app.listen(process.env.PORT||5000);
+
+// app.listen(3000);
