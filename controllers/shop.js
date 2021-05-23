@@ -1,4 +1,5 @@
 const Product = require('../models/product'); // import the Product class from models 
+const Cart = require('../models/cart');
 
 exports.getIndex = (req, res, next) => {
     Product.fetchAll((products) => {
@@ -39,12 +40,16 @@ exports.getOneProduct = (req, res, next) => {
 }
 
 exports.postCart = (req, res, next) => {
+    const productId = req.body.productId;
+    Product.findById(productId, (product) => {
+        Cart.addProduct(productId, product.price); // using the static method in Cart
+    });
     console.log(req.body.productId);
     // res.render('shop/cart', {
     //     pageTitle: 'Shop Cart',
     //     path: '/cart'
     // });
-    res.redirect('/');
+    res.redirect('/cart');
 }
 
 exports.getCart = (req, res, next) => {
