@@ -25,9 +25,11 @@
                         </div>
                         <div class="card__actions">
                             <a href="/product-list/<%= product.id %>" class="btn">Details</a>
-                            <form action="/add-to-cart" method="POST">
-                                <button class="btn" type="submit">Add to Cart</button>
-                            </form>
+
+                            <!-- include the "add cart" button -->
+                            <!-- cause we are using a for loop, so we need to pass "product" for include to work -->
+                            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            
                         </div>
                     </article>
                 <% } %>
