@@ -18,7 +18,13 @@ router.post('/add-product', adminController.postAddProduct);
 router.get('/products', adminController.getProducts);
 
 // /admin/edit-product, GET method
-router.get('/edit-product', adminController.getEditProduct);
+router.get('/edit-product/:productId', adminController.getEditProduct);
+
+// /admin/edit-product, POST method
+router.post('/edit-product', adminController.postEditProduct);
+
+// /admin/delete-product, POST method
+router.post('/delete-product', adminController.postDeleteProduct);
 
 // export this back to the app.js
 module.exports = router;
