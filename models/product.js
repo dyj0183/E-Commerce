@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const mongodb = require('mongodb');
 const getDb = require('../util/database').getDb;
 
 // import the Cart Model
@@ -18,12 +19,12 @@ module.exports = class Product {
     save() {
         const db = getDb();
         return db.collection('products').insertOne(this)
-        .then(result => {
-            console.log(result);
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .then(result => {
+                console.log(result);
+            })
+            .catch(err => {
+                console.log(err);
+            })
 
 
         // let dbOp;
@@ -42,20 +43,47 @@ module.exports = class Product {
         //   .catch(err => {
         //     console.log(err);
         //   });
-      }
-    
+    }
+
+    static fetchAll() {
+        const db = getDb();
+
+        return db.collection('products')
+        .find()
+        .toArray()
+        .then(products => {
+            console.log(products);
+            return products;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+
+    static findById(productId) {
+        const db = getDb();
+
+        return db.collection('products').find({_id: new mongodb.ObjectId(productId)})
+        .next()
+        .then(product => {
+            console.log(product);
+            return product;
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
 
 
 
+    /* all the methods below we use for working with "json files" but not a database 
+     *
+     *
+     * 
+     * 
+     */
 
-    /* all the methods we use for working with "json files" but not a database 
-    *
-    *
-    * 
-    * 
-    */
-
-    // this is used to save a new product or update an existing product
+    // // this is used to save a new product or update an existing product
     // save() {
     //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
@@ -75,11 +103,11 @@ module.exports = class Product {
     //             fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
     //                 console.log(err);
     //             });
-               
+
     //         } else {
     //             this.id = Math.random().toString();
     //             products.push(this);
-    
+
     //             fs.writeFile(p, JSON.stringify(products), (err) => {
     //                 console.log(err);
     //             });
@@ -105,7 +133,7 @@ module.exports = class Product {
             const productPrice = product.price; // we need the productPrice for removing it from the shopping cart
 
             const updatedProducts = products.filter(product => product.id !== id); // filter returns all elements that meets that statement
-            
+
             // below will work, but we want to use a new approach "filter"
             // const productIndex = products.findIndex(p => p.id === id); 
 
@@ -121,36 +149,36 @@ module.exports = class Product {
         });
     }
 
-    // use 'static' to make sure we can use 'Product' to call this method without needing to creating an object 
-    // fetchAll() doesn't return anything, the return statements belong to the inner function
-    // so we need to pass a callback function to make this work 
-    static fetchAll(cb) {
-        const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+    // // use 'static' to make sure we can use 'Product' to call this method without needing to creating an object 
+    // // fetchAll() doesn't return anything, the return statements belong to the inner function
+    // // so we need to pass a callback function to make this work 
+    // static fetchAll(cb) {
+    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
-        fs.readFile(p, (err, fileContent) => {
-            if (err) {
-                cb([]);
-                // return [];
-            }
-            cb(JSON.parse(fileContent));
-            // return JSON.parse(fileContent);
-        });
-    }
+    //     fs.readFile(p, (err, fileContent) => {
+    //         if (err) {
+    //             cb([]);
+    //             // return [];
+    //         }
+    //         cb(JSON.parse(fileContent));
+    //         // return JSON.parse(fileContent);
+    //     });
+    // }
 
-    static findById(id, anotherCB) {
-        const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-        let cb;
+    // static findById(id, anotherCB) {
+    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+    //     let cb;
 
-        fs.readFile(p, (err, fileContent) => {
-            if (err) {
-                cb([]);
-            }
-            cb(JSON.parse(fileContent));
-        });
+    //     fs.readFile(p, (err, fileContent) => {
+    //         if (err) {
+    //             cb([]);
+    //         }
+    //         cb(JSON.parse(fileContent));
+    //     });
 
-        cb = (products => {
-            const product = products.find(p => p.id === id); // javascript find() method will run through all the products and if the id matches, then it will return the product
-            anotherCB(product);
-        });
-    }
+    //     cb = (products => {
+    //         const product = products.find(p => p.id === id); // javascript find() method will run through all the products and if the id matches, then it will return the product
+    //         anotherCB(product);
+    //     });
+    // }
 }
