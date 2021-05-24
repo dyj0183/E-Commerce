@@ -1,9 +1,3 @@
-// const fs = require('fs');
-// const path = require('path');
-
-// const mongodb = require('mongodb');
-// const getDb = require('../util/database').getDb;
-
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -11,7 +5,7 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema({
     title: {
         type: String,
-        require: true
+        required: true
     },
     imageUrl: {
         type: String,
@@ -19,19 +13,29 @@ const productSchema = new Schema({
     },
     price: {
         type: Number,
-        require: true
+        required: true
     },
     description: {
         type: String,
-        require: true
+        required: true
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // use the name of the model which is "User" in our case
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Product', productSchema);
 
+
+
 /* all the methods below we use mongodb without using any "mongoose"
  *
  */
+
+// const mongodb = require('mongodb');
+// const getDb = require('../util/database').getDb;
 
 // // import the Cart Model
 // const Cart = require('./cart');
@@ -109,9 +113,14 @@ module.exports = mongoose.model('Product', productSchema);
 //         .catch(err => console.log(err))
 //     }
 
+
+
 /* all the methods below we use for working with "json files" but not a database 
  *
  */
+
+// const fs = require('fs');
+// const path = require('path');
 
 // // this is used to save a new product or update an existing product
 // save() {

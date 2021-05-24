@@ -8,7 +8,7 @@ const shopRoutes = require('./routes/shop');
 
 const errorController = require('./controllers/error');
 const mongoConnect = require('./util/database').mongoConnect;
-// const User = require('./models/user');
+const User = require('./models/user');
 
 const app = express();
 
@@ -22,16 +22,15 @@ app.use(express.urlencoded({
 //register a static folder, so that we can use the css files directly from HTML pages in our public folder 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// // get the user's info by id
-// app.use((req, res, next) => {
-//     User.findById('60abeda9817bb2bda0aa188d')
-//     .then(user => {
-//         req.user = new User(user.username, user.email, user._id, user.cart);
-//         next();
-//     })
-//     .catch(err => console.log(err));
-// });
-
+// get the user's info by id
+app.use((req, res, next) => {
+    User.findById('60ac37d0abf58564b0e8ef4e')
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes); // only routes that start with /admin will go into the adminRoutes
 app.use(shopRoutes);
@@ -40,12 +39,27 @@ app.use(shopRoutes);
 app.use('/', errorController.get404Error)
 
 mongoose.connect('mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop?retryWrites=true&w=majority')
-.then(result => {
-    app.listen(process.env.PORT || 5000);
-})
-.catch(err => {
-    console.log(err);
-});
+    .then(result => {
+        // return the first user back
+        User.findOne().then(user => {
+            if (!user) {
+                const user = new User({
+                    name: 'Jamal',
+                    email: 'jamal@gmail.com',
+                    cart: {
+                        items: []
+                    }
+                })
+                user.save(); // this save method is provided by mongoose, we didn't write it
+            }
+        });
+
+        app.listen(process.env.PORT || 5000);
+    })
+    .catch(err => {
+        console.log(err);
+    });
+
 
 
 // // old approach without using mongoose
