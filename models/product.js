@@ -8,12 +8,13 @@ const getDb = require('../util/database').getDb;
 const Cart = require('./cart');
 
 module.exports = class Product {
-    constructor(newId, newTitle, newImageUrl, newPrice, newDescription) {
+    constructor(newId, newTitle, newImageUrl, newPrice, newDescription, userId) {
         this._id = newId ? new mongodb.ObjectId(newId) : null; // the newId got sent in as a string, so we need to convert it to what mongoDB uses, otherwise we wouldn't be working with the correct product
         this.title = newTitle;
         this.imageUrl = newImageUrl;
         this.price = newPrice;
         this.description = newDescription;
+        this.userId = userId;
     }
 
     save() {

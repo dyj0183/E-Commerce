@@ -9,7 +9,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
     // instantiate a new product object, we set id to null otherwise it would go into update product if statement in the Product model 
-    const product = new Product(null, req.body.title, req.body.imageUrl, req.body.price, req.body.description); 
+    const product = new Product(null, req.body.title, req.body.imageUrl, req.body.price, req.body.description, req.user._id); 
     product.save()
     .then(result => {
         console.log('created product successfully');
