@@ -46,15 +46,26 @@ exports.getOneProduct = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
     const productId = req.body.productId;
-    Product.findById(productId, (product) => {
-        Cart.addProduct(productId, product.price); // using the static method in Cart
-    });
-    console.log(req.body.productId);
-    // res.render('shop/cart', {
-    //     pageTitle: 'Shop Cart',
-    //     path: '/cart'
+    Product.findById(productId)
+    .then(product => {
+        return req.user.addToCart(product);
+    })
+    .then(result => {
+        console.log(result);
+        res.redirect('/');
+    })
+    .catch(err => console.log(err));
+
+
+    // , (product) => {
+    //     Cart.addProduct(productId, product.price); // using the static method in Cart
     // });
-    res.redirect('/cart');
+    // console.log(req.body.productId);
+    // // res.render('shop/cart', {
+    // //     pageTitle: 'Shop Cart',
+    // //     path: '/cart'
+    // // });
+    // res.redirect('/cart');
 }
 
 exports.getCart = (req, res, next) => {
