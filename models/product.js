@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const getDb = require('../util/database').getDb;
+
 // import the Cart Model
 const Cart = require('./cart');
 
@@ -13,37 +15,77 @@ module.exports = class Product {
         this.description = newDescription;
     }
 
-    // this is used to save a new product or update an existing product
     save() {
-        const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+        const db = getDb();
+        return db.collection('products').insertOne(this)
+        .then(result => {
+            console.log(result);
+        })
+        .catch(err => {
+            console.log(err);
+        })
 
-        fs.readFile(p, (err, fileContent) => {
-            let products = [];
-            if (!err) {
-                products = JSON.parse(fileContent);
-            }
 
-            // check if the id exists or not, if exists, then simply update it instead of creating a new id for it
-            if (this.id) {
-                // first, find the product
-                const existingProductIndex = products.findIndex(p => p.id === this.id);
-                const updatedProducts = [...products]; // why do I need to create a new one? Can't I do this: products[existingProductIndex] = this; ?
-                updatedProducts[existingProductIndex] = this;
-
-                fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-                    console.log(err);
-                });
-               
-            } else {
-                this.id = Math.random().toString();
-                products.push(this);
+        // let dbOp;
+        // if (this._id) {
+        //   // Update the product
+        //   dbOp = db
+        //     .collection('products')
+        //     .updateOne({ _id: this._id }, { $set: this });
+        // } else {
+        //   dbOp = db.collection('products').insertOne(this);
+        // }
+        // return dbOp
+        //   .then(result => {
+        //     console.log(result);
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
+      }
     
-                fs.writeFile(p, JSON.stringify(products), (err) => {
-                    console.log(err);
-                });
-            }
-        });
-    }
+
+
+
+
+    /* all the methods we use for working with "json files" but not a database 
+    *
+    *
+    * 
+    * 
+    */
+
+    // this is used to save a new product or update an existing product
+    // save() {
+    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+
+    //     fs.readFile(p, (err, fileContent) => {
+    //         let products = [];
+    //         if (!err) {
+    //             products = JSON.parse(fileContent);
+    //         }
+
+    //         // check if the id exists or not, if exists, then simply update it instead of creating a new id for it
+    //         if (this.id) {
+    //             // first, find the product
+    //             const existingProductIndex = products.findIndex(p => p.id === this.id);
+    //             const updatedProducts = [...products]; // why do I need to create a new one? Can't I do this: products[existingProductIndex] = this; ?
+    //             updatedProducts[existingProductIndex] = this;
+
+    //             fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+    //                 console.log(err);
+    //             });
+               
+    //         } else {
+    //             this.id = Math.random().toString();
+    //             products.push(this);
+    
+    //             fs.writeFile(p, JSON.stringify(products), (err) => {
+    //                 console.log(err);
+    //             });
+    //         }
+    //     });
+    // }
 
     static deleteById(id) {
 
