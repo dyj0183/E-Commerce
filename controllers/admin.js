@@ -8,8 +8,15 @@ exports.getAddProduct = (req, res, next) => {
 }
 
 exports.postAddProduct = (req, res, next) => {
-    // instantiate a new product object, we set id to null otherwise it would go into update product if statement in the Product model 
-    const product = new Product(null, req.body.title, req.body.imageUrl, req.body.price, req.body.description, req.user._id); 
+    // instantiate a new product object, we set id to null otherwise it would go into update product if statement in the Product model
+    // left side is from the Product Schema, right side is the data from req.body
+    const product = new Product({
+        title: req.body.title,
+        imageUrl: req.body.imageUrl,
+        price: req.body.price,
+        description: req.body.description
+    });
+        
     product.save()
     .then(result => {
         console.log('created product successfully');
@@ -21,7 +28,7 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
+    Product.find() // this find method is provided by mongoose
     .then(products => {
         res.render('admin/products', {
             products: products,
@@ -59,13 +66,18 @@ exports.postEditProduct = (req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedDescription = req.body.description;
 
-    const updatedProduct = new Product(productId, updatedTitle, updatedImageUrl, updatedPrice, updatedDescription);
-
-    // it will check the id first, and then if id already exists, it will update the data in the products
-    updatedProduct.save()
+    Product.findById(productId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.imageUrl = updatedImageUrl;
+      product.price = updatedPrice;
+      product.description = updatedDescription;
+     
+      return product.save();
+    })
     .then(result => {
-        console.log("updated product successfully!");
-        res.redirect('/admin/products');
+      console.log('UPDATED PRODUCT!');
+      res.redirect('/admin/products');
     })
     .catch(err => console.log(err));
 }

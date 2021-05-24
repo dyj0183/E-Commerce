@@ -1,188 +1,214 @@
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 
-const mongodb = require('mongodb');
-const getDb = require('../util/database').getDb;
+// const mongodb = require('mongodb');
+// const getDb = require('../util/database').getDb;
 
-// import the Cart Model
-const Cart = require('./cart');
+const mongoose = require('mongoose');
 
-module.exports = class Product {
-    constructor(newId, newTitle, newImageUrl, newPrice, newDescription, userId) {
-        this._id = newId ? new mongodb.ObjectId(newId) : null; // the newId got sent in as a string, so we need to convert it to what mongoDB uses, otherwise we wouldn't be working with the correct product
-        this.title = newTitle;
-        this.imageUrl = newImageUrl;
-        this.price = newPrice;
-        this.description = newDescription;
-        this.userId = userId;
-    }
+const Schema = mongoose.Schema;
 
-    save() {
-        const db = getDb();
-        let dbOperation;
-        if (this._id) {
-            // Update the product
-            dbOperation = db
-                .collection('products')
-                .updateOne({_id: this._id}, {$set: this});
-        } else {
-            dbOperation = db.collection('products').insertOne(this);
-        }
+const productSchema = new Schema({
+    title: {
+        type: String,
+        require: true
+    },
+    imageUrl: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        require: true
+    },
+    description: {
+        type: String,
+        require: true
+    },
+});
 
-        return dbOperation
-            .then(result => {
-                console.log(result);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+module.exports = mongoose.model('Product', productSchema);
 
-    static fetchAll() {
-        const db = getDb();
+/* all the methods below we use mongodb without using any "mongoose"
+ *
+ */
 
-        return db.collection('products')
-            .find()
-            .toArray()
-            .then(products => {
-                console.log(products);
-                return products;
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+// // import the Cart Model
+// const Cart = require('./cart');
 
-    static findById(productId) {
-        const db = getDb();
+// module.exports = class Product {
+//     constructor(newId, newTitle, newImageUrl, newPrice, newDescription, userId) {
+//         this._id = newId ? new mongodb.ObjectId(newId) : null; // the newId got sent in as a string, so we need to convert it to what mongoDB uses, otherwise we wouldn't be working with the correct product
+//         this.title = newTitle;
+//         this.imageUrl = newImageUrl;
+//         this.price = newPrice;
+//         this.description = newDescription;
+//         this.userId = userId;
+//     }
 
-        return db.collection('products').find({
-                _id: new mongodb.ObjectId(productId)
-            })
-            .next()
-            .then(product => {
-                console.log(product);
-                return product;
-            })
-            .catch(err => {
-                console.log(err);
-            })
-    }
+//     save() {
+//         const db = getDb();
+//         let dbOperation;
+//         if (this._id) {
+//             // Update the product
+//             dbOperation = db
+//                 .collection('products')
+//                 .updateOne({_id: this._id}, {$set: this});
+//         } else {
+//             dbOperation = db.collection('products').insertOne(this);
+//         }
 
-    static deleteById(productId) {
-        const db = getDb();
+//         return dbOperation
+//             .then(result => {
+//                 console.log(result);
+//             })
+//             .catch(err => {
+//                 console.log(err);
+//             });
+//     }
 
-        return db.collection('products')
-        .deleteOne({_id: new mongodb.ObjectId(productId)})
-        .then(result => {
-            console.log('Deleted product by ID');
-        })
-        .catch(err => console.log(err))
-    }
+//     static fetchAll() {
+//         const db = getDb();
 
-    /* all the methods below we use for working with "json files" but not a database 
-     *
-     *
-     * 
-     * 
-     */
+//         return db.collection('products')
+//             .find()
+//             .toArray()
+//             .then(products => {
+//                 console.log(products);
+//                 return products;
+//             })
+//             .catch(err => {
+//                 console.log(err);
+//             });
+//     }
 
-    // // this is used to save a new product or update an existing product
-    // save() {
-    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+//     static findById(productId) {
+//         const db = getDb();
 
-    //     fs.readFile(p, (err, fileContent) => {
-    //         let products = [];
-    //         if (!err) {
-    //             products = JSON.parse(fileContent);
-    //         }
+//         return db.collection('products').find({
+//                 _id: new mongodb.ObjectId(productId)
+//             })
+//             .next()
+//             .then(product => {
+//                 console.log(product);
+//                 return product;
+//             })
+//             .catch(err => {
+//                 console.log(err);
+//             })
+//     }
 
-    //         // check if the id exists or not, if exists, then simply update it instead of creating a new id for it
-    //         if (this.id) {
-    //             // first, find the product
-    //             const existingProductIndex = products.findIndex(p => p.id === this.id);
-    //             const updatedProducts = [...products]; // why do I need to create a new one? Can't I do this: products[existingProductIndex] = this; ?
-    //             updatedProducts[existingProductIndex] = this;
+//     static deleteById(productId) {
+//         const db = getDb();
 
-    //             fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-    //                 console.log(err);
-    //             });
+//         return db.collection('products')
+//         .deleteOne({_id: new mongodb.ObjectId(productId)})
+//         .then(result => {
+//             console.log('Deleted product by ID');
+//         })
+//         .catch(err => console.log(err))
+//     }
 
-    //         } else {
-    //             this.id = Math.random().toString();
-    //             products.push(this);
+/* all the methods below we use for working with "json files" but not a database 
+ *
+ */
 
-    //             fs.writeFile(p, JSON.stringify(products), (err) => {
-    //                 console.log(err);
-    //             });
-    //         }
-    //     });
-    // }
+// // this is used to save a new product or update an existing product
+// save() {
+//     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
 
-    // static deleteById(id) {
+//     fs.readFile(p, (err, fileContent) => {
+//         let products = [];
+//         if (!err) {
+//             products = JSON.parse(fileContent);
+//         }
 
-    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-    //     let cb;
+//         // check if the id exists or not, if exists, then simply update it instead of creating a new id for it
+//         if (this.id) {
+//             // first, find the product
+//             const existingProductIndex = products.findIndex(p => p.id === this.id);
+//             const updatedProducts = [...products]; // why do I need to create a new one? Can't I do this: products[existingProductIndex] = this; ?
+//             updatedProducts[existingProductIndex] = this;
 
-    //     fs.readFile(p, (err, fileContent) => {
-    //         if (err) {
-    //             cb([]);
-    //         }
-    //         cb(JSON.parse(fileContent));
-    //     });
+//             fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+//                 console.log(err);
+//             });
 
-    //     cb = (products => {
+//         } else {
+//             this.id = Math.random().toString();
+//             products.push(this);
 
-    //         const product = products.find(p => p.id === id);
-    //         const productPrice = product.price; // we need the productPrice for removing it from the shopping cart
+//             fs.writeFile(p, JSON.stringify(products), (err) => {
+//                 console.log(err);
+//             });
+//         }
+//     });
+// }
 
-    //         const updatedProducts = products.filter(product => product.id !== id); // filter returns all elements that meets that statement
+// static deleteById(id) {
 
-    //         // below will work, but we want to use a new approach "filter"
-    //         // const productIndex = products.findIndex(p => p.id === id); 
+//     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+//     let cb;
 
-    //         fs.writeFile(p, JSON.stringify(updatedProducts), err => {
-    //             // if no err, we also want to remove the product from the shopping cart
-    //             if (!err) {
-    //                 Cart.deleteProduct(id, productPrice)
+//     fs.readFile(p, (err, fileContent) => {
+//         if (err) {
+//             cb([]);
+//         }
+//         cb(JSON.parse(fileContent));
+//     });
 
-    //             } else {
-    //                 console.log(err);
-    //             }
-    //         });
-    //     });
-    // }
+//     cb = (products => {
 
-    // // use 'static' to make sure we can use 'Product' to call this method without needing to creating an object 
-    // // fetchAll() doesn't return anything, the return statements belong to the inner function
-    // // so we need to pass a callback function to make this work 
-    // static fetchAll(cb) {
-    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+//         const product = products.find(p => p.id === id);
+//         const productPrice = product.price; // we need the productPrice for removing it from the shopping cart
 
-    //     fs.readFile(p, (err, fileContent) => {
-    //         if (err) {
-    //             cb([]);
-    //             // return [];
-    //         }
-    //         cb(JSON.parse(fileContent));
-    //         // return JSON.parse(fileContent);
-    //     });
-    // }
+//         const updatedProducts = products.filter(product => product.id !== id); // filter returns all elements that meets that statement
 
-    // static findById(id, anotherCB) {
-    //     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-    //     let cb;
+//         // below will work, but we want to use a new approach "filter"
+//         // const productIndex = products.findIndex(p => p.id === id); 
 
-    //     fs.readFile(p, (err, fileContent) => {
-    //         if (err) {
-    //             cb([]);
-    //         }
-    //         cb(JSON.parse(fileContent));
-    //     });
+//         fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+//             // if no err, we also want to remove the product from the shopping cart
+//             if (!err) {
+//                 Cart.deleteProduct(id, productPrice)
 
-    //     cb = (products => {
-    //         const product = products.find(p => p.id === id); // javascript find() method will run through all the products and if the id matches, then it will return the product
-    //         anotherCB(product);
-    //     });
-    // }
-}
+//             } else {
+//                 console.log(err);
+//             }
+//         });
+//     });
+// }
+
+// // use 'static' to make sure we can use 'Product' to call this method without needing to creating an object 
+// // fetchAll() doesn't return anything, the return statements belong to the inner function
+// // so we need to pass a callback function to make this work 
+// static fetchAll(cb) {
+//     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+
+//     fs.readFile(p, (err, fileContent) => {
+//         if (err) {
+//             cb([]);
+//             // return [];
+//         }
+//         cb(JSON.parse(fileContent));
+//         // return JSON.parse(fileContent);
+//     });
+// }
+
+// static findById(id, anotherCB) {
+//     const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
+//     let cb;
+
+//     fs.readFile(p, (err, fileContent) => {
+//         if (err) {
+//             cb([]);
+//         }
+//         cb(JSON.parse(fileContent));
+//     });
+
+//     cb = (products => {
+//         const product = products.find(p => p.id === id); // javascript find() method will run through all the products and if the id matches, then it will return the product
+//         anotherCB(product);
+//     });
+// }
+//}

@@ -2,7 +2,7 @@ const Product = require('../models/product'); // import the Product class from m
 const Cart = require('../models/cart');
 
 exports.getIndex = (req, res, next) => {
-    Product.fetchAll()
+    Product.find() // method from mongoose
         .then(products => {
             res.render('shop/index', {
                 products: products,
@@ -16,7 +16,7 @@ exports.getIndex = (req, res, next) => {
 }
 
 exports.getProductList = (req, res, next) => {
-    Product.fetchAll()
+    Product.find() // method from mongoose
         .then(products => {
             res.render('shop/product-list', {
                 products: products,
