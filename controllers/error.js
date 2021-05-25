@@ -3,7 +3,8 @@ exports.get404Error = (req, res, next) => {
     // use use '404', we can then pass javascript object 
     res.status(404).render('404', {
         pageTitle: 'Page Not Found',
-        path: ''
+        path: '/404',
+        isAuthenticated: req.session.isLoggedIn
     });
 
     // this is old, we are using template engine now, so don't need this anymore

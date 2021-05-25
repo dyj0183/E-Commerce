@@ -3,7 +3,8 @@ const Product = require('../models/product'); // import the Product class from m
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
         pageTitle: 'Admin Add-Product',
-        path: '/admin/add-product'
+        path: '/admin/add-product',
+        isAuthenticated: req.session.isLoggedIn
     });
 }
 
@@ -35,7 +36,8 @@ exports.getProducts = (req, res, next) => {
         res.render('admin/products', {
             products: products,
             pageTitle: 'Admin Products',
-            path: '/admin/products'
+            path: '/admin/products',
+            isAuthenticated: req.session.isLoggedIn
         })
     })
     .catch(err => {
@@ -55,7 +57,8 @@ exports.getEditProduct = (req, res, next) => {
         res.render('admin/edit-product', {
             pageTitle: 'Admin Edit Product',
             path: '/admin/edit-product',
-            product: product
+            product: product,
+            isAuthenticated: req.session.isLoggedIn
         });
     })
     .catch(err => console.log(err));

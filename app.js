@@ -2,11 +2,13 @@ const path = require('path');
 
 const express = require('express');
 const mongoose = require('mongoose');
-
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shop');
 const session = require('express-session'); // import this to work with session
 const MongoDBStore = require('connect-mongodb-session')(session); // use to store session in the mongodb database
+
+// routes we work with
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const authRoutes = require('./routes/auth');
 
 const errorController = require('./controllers/error');
 // const mongoConnect = require('./util/database').mongoConnect;
@@ -31,10 +33,25 @@ app.use(express.urlencoded({
 //register a static folder, so that we can use the css files directly from HTML pages in our public folder 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// set up the session
+app.use(
+    session({
+        secret: 'my secret',
+        resave: false,
+        saveUninitialized: false,
+        store: store
+    })
+);
+
 // get the user's info by id
 app.use((req, res, next) => {
-    User.findById('60ac37d0abf58564b0e8ef4e')
+    // we need to check here cause if the user doesn't login, then no session yet, so we would get error
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
         .then(user => {
+            // we still want to use the user returned by "mongoose" when it is logged it, so that we can call all the methods of the "user object"
             req.user = user;
             next();
         })
@@ -43,6 +60,7 @@ app.use((req, res, next) => {
 
 app.use('/admin', adminRoutes); // only routes that start with /admin will go into the adminRoutes
 app.use(shopRoutes);
+app.use(authRoutes);
 
 // handle 404 page and wrong url
 app.use('/', errorController.get404Error)
@@ -62,7 +80,7 @@ mongoose.connect('mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop?
                 user.save(); // this save method is provided by mongoose, we didn't write it
             }
         });
-
+        // must have "process.env.PORT" for heroku to work!!!
         app.listen(process.env.PORT || 5000);
     })
     .catch(err => {

@@ -26,9 +26,11 @@
                         <div class="card__actions">
                             <a href="/product-list/<%= product._id %>" class="btn">Details</a>
 
-                            <!-- include the "add cart" button -->
-                            <!-- cause we are using a for loop, so we need to pass "product" for include to work -->
-                            <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            <% if (isAuthenticated) { %>
+                                <!-- include the "add cart" button -->
+                                <!-- cause we are using a for loop, so we need to pass "product" for include to work -->
+                                <%- include('../includes/add-to-cart.ejs', {product: product}) %>
+                            <% } %>
                         </div>
                     </article>
                 <% } %>
@@ -36,6 +38,5 @@
         <% } else { %>
             <h1>No Products Found!</h1>
         <% } %>
-    </main>
-    
+    </main>   
 <%- include('../includes/end.ejs') %>
