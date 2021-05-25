@@ -29,7 +29,8 @@ exports.postAddProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.find() // this find method is provided by mongoose
+    Product.find() // this find() method is provided by mongoose
+    //.populate('userId'), we can use this to grab all the user's data based on the userId, very neat tech!
     .then(products => {
         res.render('admin/products', {
             products: products,

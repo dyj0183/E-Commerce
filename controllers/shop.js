@@ -58,8 +58,11 @@ exports.postCart = (req, res, next) => {
 }
 
 exports.getCart = (req, res, next) => {
-    req.user.getCart()
-        .then(products => {
+    req.user
+        .populate('cart.items.productdId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.items;
             res.render('shop/cart', {
                 pageTitle: 'Shop Cart',
                 path: '/cart',

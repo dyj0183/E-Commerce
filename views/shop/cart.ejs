@@ -10,9 +10,9 @@
             <ul>
                 <% combinedProducts.forEach(product => { %>
                     <li>
-                        <p>Product Title: <%= product.title %>, Quantity: <%= product.quantity %></p>
+                        <p>Product Title: <%= product.productId.title %>, Quantity: <%= product.quantity %></p>
                         <form action="/cart-delete-item" method="POST">
-                            <input type="hidden" name="productId" value="<%= product._id %>">
+                            <input type="hidden" name="productId" value="<%= product.productId._id %>">
                             <button class="btn" type="submit">Delete</button>
                         </form>
                     </li>
@@ -24,7 +24,7 @@
                     <button type="submit" class="btn">Order Now!</button>
                 </form>
             </div>
-            
+
         <% } else { %>
             <h1>No products in your cart yet. Time to add a new one!</h1>
         <% } %>        
