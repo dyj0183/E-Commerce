@@ -8,7 +8,7 @@ exports.getIndex = (req, res, next) => {
         .then(products => {
             res.render('shop/index', {
                 products: products,
-                pageTitle: 'Shop Index',
+                pageTitle: "Sami's Store",
                 path: '/', // the path here is used to help users know which page they are viewing (the active class we set up)
                 isAuthenticated: req.session.isLoggedIn
             })
@@ -23,7 +23,7 @@ exports.getProductList = (req, res, next) => {
         .then(products => {
             res.render('shop/product-list', {
                 products: products,
-                pageTitle: 'Shop Product List',
+                pageTitle: 'Shop Dessert List',
                 path: '/product-list',
                 isAuthenticated: req.session.isLoggedIn
             })

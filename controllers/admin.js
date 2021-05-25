@@ -2,7 +2,7 @@ const Product = require('../models/product'); // import the Product class from m
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
-        pageTitle: 'Admin Add-Product',
+        pageTitle: 'Admin Add Product',
         path: '/admin/add-product',
         isAuthenticated: req.session.isLoggedIn
     });
