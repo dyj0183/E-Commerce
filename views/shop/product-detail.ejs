@@ -5,18 +5,20 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <main class="center">
-        <h1><%= product.title %></h1>
-        <!-- <h1>Product ID: <%= product.id %></h1> -->
-        <div>
-            <img src="<%= product.imageUrl %>" alt="<%= product.title %>" width="400px" height="200px">
-        </div>
-        <h2>$<%= product.price %></h2>
-        <p><%= product.description %></p>
+    <main class="centered">
+        <div class="product-detail-box">
+            <h1><%= product.title %></h1>
+            <!-- <h1>Product ID: <%= product.id %></h1> -->
+            <div>
+                <img src="<%= product.imageUrl %>" alt="<%= product.title %>" width="400px" height="200px">
+            </div>
+            <h2>$<%= product.price %></h2>
+            <p><%= product.description %></p>
 
-        <% if (isAuthenticated) { %>
-            <!-- include the "add cart" button -->
-            <%- include('../includes/add-to-cart.ejs') %>
-        <% } %>
+            <% if (isAuthenticated) { %>
+                <!-- include the "add cart" button -->
+                <%- include('../includes/add-to-cart.ejs') %>
+            <% } %>
+        </div>
     </main>
     <%- include('../includes/end.ejs') %>

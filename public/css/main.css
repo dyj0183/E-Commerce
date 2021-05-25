@@ -19,6 +19,19 @@ form {
     display: inline;
 }
 
+.welcome-message {
+    text-align: center;
+    color: #ff80d5;
+}
+
+.product-detail-box {
+    border: 1.5px solid rgb(153, 102, 0);
+    border-radius: 3px;
+    width: 500px;
+    margin: auto;
+    padding: 8px;
+}
+
 .centered {
     text-align: center;
 }
@@ -34,7 +47,7 @@ form {
 .main-header {
     width: 100%;
     height: 3.5rem;
-    background-color: #00695c;
+    background-color: rgb(153, 102, 0);
     padding: 0 1.5rem;
     display: flex;
     align-items: center;
@@ -75,7 +88,7 @@ form {
 .main-header__item a.active,
 .main-header__item button:hover,
 .main-header__item button:active {
-    color: #ffeb3b;
+    color: #ff80d5;
 }
 
 .mobile-nav {
@@ -126,7 +139,7 @@ form {
 .mobile-nav__item a.active,
 .mobile-nav__item button:hover,
 .mobile-nav__item button:active {
-    background: #00695c;
+    background: #ff80d5;
     color: white;
     border-radius: 3px;
 }
@@ -208,8 +221,8 @@ form {
     padding: 0.25rem 1rem;
     text-decoration: none;
     font: inherit;
-    border: 1px solid #00695c;
-    color: #00695c;
+    border: 1px solid #ff80d5;
+    color: #ff80d5;
     background: white;
     border-radius: 3px;
     cursor: pointer;
@@ -217,7 +230,7 @@ form {
 
 .btn:hover,
 .btn:active {
-    background-color: #00695c;
+    background-color: #ff80d5;
     color: white;
 }
 

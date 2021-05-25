@@ -8,10 +8,10 @@
 
     <main>
         <% if (combinedProducts.length > 0) { %>
-            <ul>
+            <ul class="cart__item-list">
                 <% combinedProducts.forEach(product => { %>
-                    <li>
-                        <h1>Product Title: <%= product.productId.title %></h1>
+                    <li class="cart__item">
+                        <h1>Product: <%= product.productId.title %></h1>
                         <h2>Quantity: <%= product.quantity %></h2>
                         <form action="/cart-delete-item" method="POST">
                             <input type="hidden" name="productId" value="<%= product.productId._id %>">
@@ -28,7 +28,7 @@
             </div>
 
         <% } else { %>
-            <h1>No products in your cart yet. Time to add a new one!</h1>
+            <h1 class="welcome-message">No products in your cart yet. Time to add a new one!</h1>
         <% } %>        
     </main>
    
