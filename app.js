@@ -68,18 +68,19 @@ app.use('/', errorController.get404Error)
 mongoose.connect('mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop?retryWrites=true&w=majority')
     .then(result => {
         // return the first user back
-        User.findOne().then(user => {
-            if (!user) {
-                const user = new User({
-                    name: 'Jamal',
-                    email: 'jamal@gmail.com',
-                    cart: {
-                        items: []
-                    }
-                })
-                user.save(); // this save method is provided by mongoose, we didn't write it
-            }
-        });
+        // User.findOne().then(user => {
+        //     if (!user) {
+        //         const user = new User({
+        //             name: 'Jamal',
+        //             email: 'jamal@gmail.com',
+        //             cart: {
+        //                 items: []
+        //             }
+        //         })
+        //         user.save(); // this save method is provided by mongoose, we didn't write it
+        //     }
+        // });
+        
         // must have "process.env.PORT" for heroku to work!!!
         app.listen(process.env.PORT || 5000);
     })
