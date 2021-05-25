@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session'); // import this to work with session
 const MongoDBStore = require('connect-mongodb-session')(session); // use to store session in the mongodb database
+const csrf = require('csurf'); // we use csrf token to make all the user requests more secure
 
 // routes we work with
 const adminRoutes = require('./routes/admin');
@@ -14,10 +15,11 @@ const errorController = require('./controllers/error');
 // const mongoConnect = require('./util/database').mongoConnect;
 const User = require('./models/user');
 
-const MONGODB_URI = 'mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop';
+const csrfProtection = csrf();
 
 const app = express();
 
+const MONGODB_URI = 'mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop';
 const store = new MongoDBStore({
     uri: MONGODB_URI,
     collection: 'sessions'
@@ -43,6 +45,9 @@ app.use(
     })
 );
 
+// use the csrf
+app.use(csrfProtection);
+
 // get the user's info by id
 app.use((req, res, next) => {
     // we need to check here cause if the user doesn't login, then no session yet, so we would get error
@@ -57,6 +62,18 @@ app.use((req, res, next) => {
         })
         .catch(err => console.log(err));
 });
+
+/************************************************************************************** 
+ * instead of having the same codes in all the controllers to render to all the pages,
+ * we can simply render these data here to all the pages
+ * I need to go to all the views and if there is a form, I need to add this line
+ * <input type="hidden" name="_csrf" value="<%= csrfToken %>"> 
+ **************************************************************************************/
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken();
+    next();
+})
 
 app.use('/admin', adminRoutes); // only routes that start with /admin will go into the adminRoutes
 app.use(shopRoutes);
@@ -80,7 +97,7 @@ mongoose.connect('mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop?
         //         user.save(); // this save method is provided by mongoose, we didn't write it
         //     }
         // });
-        
+
         // must have "process.env.PORT" for heroku to work!!!
         app.listen(process.env.PORT || 5000);
     })
