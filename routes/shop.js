@@ -24,8 +24,6 @@ router.post('/create-order', shopController.postOrder);
 
 router.get('/orders', shopController.getOrders);
 
-
-
 // export the router back to app.js
 module.exports = router;
 
