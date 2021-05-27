@@ -10,7 +10,6 @@ exports.getIndex = (req, res, next) => {
                 products: products,
                 pageTitle: "Sami's Store",
                 path: '/', // the path here is used to help users know which page they are viewing (the active class we set up)
-                isAuthenticated: req.session.isLoggedIn
             })
         })
         .catch(err => {
@@ -25,7 +24,6 @@ exports.getProductList = (req, res, next) => {
                 products: products,
                 pageTitle: 'Shop Dessert List',
                 path: '/product-list',
-                isAuthenticated: req.session.isLoggedIn
             })
         })
         .catch(err => {
@@ -41,7 +39,6 @@ exports.getOneProduct = (req, res, next) => {
                 product: product,
                 pageTitle: 'Shop Product Detail',
                 path: '/product-list',
-                isAuthenticated: req.session.isLoggedIn
             })
         })
         .catch(err => {
@@ -72,7 +69,6 @@ exports.getCart = (req, res, next) => {
                 pageTitle: 'Shop Cart',
                 path: '/cart',
                 combinedProducts: products,
-                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => {
@@ -130,7 +126,6 @@ exports.getOrders = (req, res, next) => {
                 pageTitle: 'Shop Orders',
                 path: '/orders',
                 orders: orders,
-                isAuthenticated: req.session.isLoggedIn
             });
         })
         .catch(err => console.log(err));
