@@ -4,7 +4,12 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <h1 class="welcome-message">Time to Add to Cart!</h1>
+    <!-- display the matched welcome message to the user -->
+    <% if (isAuthenticated) { %>
+        <h1 class="welcome-message">Time to Add Favorite Desserts to Cart!</h1>
+    <% } else { %>
+        <h1 class="welcome-message">Time to Login & Add Favorite Desserts to Cart!</h1>
+    <% } %>
 
     <main>
         <% if (products.length > 0) { %>
