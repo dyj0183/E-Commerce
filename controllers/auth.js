@@ -119,7 +119,7 @@ exports.postSignup = (req, res, next) => {
                         to: email,
                         from: 'sami.dessertstore@gmail.com',
                         subject: 'Signup succeeded!',
-                        html: '<h1>You successfully signed up! Log back in & Start shopping for your favorite desserts!</h1>'
+                        html: '<h1>You successfully signed up! Log back in & Start shopping for your favorite desserts!!</h1>'
                     })
                 })
                 .catch(err => {
