@@ -3,18 +3,33 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 exports.getLogin = (req, res, next) => {
+    // if we console.log req.flash('error'), we can see that it is an empty array
+    // so we need to assign it to null in order for our CSS to work on the login page
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/login', {
         path: '/login',
         pageTitle: 'Login Page',
-        isAuthenticated: false // we set this up here to help us identify what pages to display to user based on authentication
+        errorMessage: message,
+       
     });
 };
 
 exports.getSignup = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/signup', {
         path: '/signup',
         pageTitle: 'Signup Page',
-        isAuthenticated: false
+        errorMessage: message,
     });
 };
 
@@ -29,6 +44,7 @@ exports.postLogin = (req, res, next) => {
         .then(user => {
             // if we can't find the user by email, return back to the login page
             if (!user) {
+                req.flash('error', 'Invalid Email'); // set up the key value pair
                 return res.redirect('/login');
             }
 
@@ -46,6 +62,7 @@ exports.postLogin = (req, res, next) => {
                         });
                     }
                     // password doesn't match, return back to login page
+                    req.flash('error', 'Invalid Password');
                     res.redirect('login');
                 }) // both math and not match would go into .then()
                 .catch(err => {
@@ -69,6 +86,7 @@ exports.postSignup = (req, res, next) => {
             // if this is true, means email already exists in the database, can't create another new user with same email
             if (userDoc) {
                 // redirect back to the signup page
+                req.flash('error', 'E-Mail already exists, please use a different one.');
                 return res.redirect('/signup');
             }
             return bcrypt.hash(password, 12) // this is async code, so we need to use a then which is below

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const session = require('express-session'); // import this to work with session
 const MongoDBStore = require('connect-mongodb-session')(session); // use to store session in the mongodb database
 const csrf = require('csurf'); // we use csrf token to make all the user requests more secure
+const flash = require('connect-flash'); // allows us to render an error message back to the user
 
 // routes we work with
 const adminRoutes = require('./routes/admin');
@@ -47,6 +48,8 @@ app.use(
 
 // use the csrf
 app.use(csrfProtection);
+// user the flash
+app.use(flash());
 
 // get the user's info by id
 app.use((req, res, next) => {
