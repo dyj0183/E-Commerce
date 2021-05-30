@@ -1,6 +1,15 @@
 const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 const User = require('../models/user');
+
+// set up the email transporter
+const transporter = nodemailer.createTransport(sendgridTransport({
+    auth: {
+        api_key: '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'
+    }
+}));
 
 exports.getLogin = (req, res, next) => {
     // if we console.log req.flash('error'), we can see that it is an empty array
@@ -105,6 +114,16 @@ exports.postSignup = (req, res, next) => {
                 .then(result => {
                     // after we are done saving the new user's data, redirect to the login page
                     res.redirect('/login');
+                    // after saving a new user successfully, we will send out an email
+                    return transporter.sendMail({
+                        to: email,
+                        from: 'sami.dessertstore@gmail.com',
+                        subject: 'Signup succeeded!',
+                        html: '<h1>You successfully signed up! Log back in & Start shopping for your favorite desserts!</h1>'
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
                 })
         })
         .catch(err => {
