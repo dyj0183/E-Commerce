@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
@@ -24,7 +26,6 @@ exports.getLogin = (req, res, next) => {
         path: '/login',
         pageTitle: 'Login Page',
         errorMessage: message,
-       
     });
 };
 
@@ -146,12 +147,51 @@ exports.getResetPassword = (req, res, next) => {
     } else {
         message = null;
     }
-    
+
     res.render('auth/reset-password', {
         path: '/reset-password',
         pageTitle: 'Reset Password',
         errorMessage: message,
     });
+}
 
+exports.postResetPassword = (req, res, next) => {
+    const email = req.body.email;
 
+    crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log(err);
+            return res.redirect('/reset-password');
+        }
+        const token = buffer.toString('hex');
+
+        User.findOne({email: email})
+        .then(user => {
+            if (!user) {
+                req.flash('error', 'No account found with that email');
+                return res.redirect('/reset-password');
+            }
+
+            user.resetToken = token;
+            user.resetTokenExpiration = Date.now() + 3600000 // one hour
+            return user.save();
+
+        })
+        .then(result => {
+            // codes come in here means that successfully save the new token and expiration date to the user
+
+            transporter.sendMail({
+                to: email,
+                from: 'sami.dessertstore@gmail.com',
+                subject: 'Password Reset',
+                html: `
+                    <p>You requested a password reset</p>
+                    <p>Click this <a href="http://localhost:5000/reset/${token}>link</a> to set a new password</p>
+                `
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    })
 }
