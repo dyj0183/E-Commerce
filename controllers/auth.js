@@ -9,7 +9,7 @@ const User = require('../models/user');
 // set up the email transporter
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
-        api_key: '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'
+        api_key: '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'
     }
 }));
 
@@ -168,7 +168,7 @@ exports.postResetPassword = (req, res, next) => {
         User.findOne({email: email})
         .then(user => {
             if (!user) {
-                req.flash('error', 'No account found with that email');
+                req.flash('error', 'No account found with this email');
                 return res.redirect('/reset-password');
             }
 
