@@ -17,49 +17,52 @@ exports.postAddProduct = (req, res, next) => {
         description: req.body.description,
         userId: req.user._id
     });
-        
+
     product.save()
-    .then(result => {
-        console.log('created product successfully');
-        res.redirect('/');
-    })
-    .catch(err => {
-        console.log(err);
-    })
+        .then(result => {
+            console.log('created product successfully');
+            res.redirect('/');
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.find() // this find() method is provided by mongoose
-    //.populate('userId'), we can use this to grab all the user's data based on the userId, very neat tech!
-    .then(products => {
-        res.render('admin/products', {
-            products: products,
-            pageTitle: 'Admin Products',
-            path: '/admin/products',
-            username: req.session.user.name
+    // this find() method is provided by mongoose
+    Product.find({
+            userId: req.user._id // authorization: we only want to display the products created by this specific user
         })
-    })
-    .catch(err => {
-        console.log(err);
-    })
+        //.populate('userId'), we can use this to grab all the user's data based on the userId, very neat tech!
+        .then(products => {
+            res.render('admin/products', {
+                products: products,
+                pageTitle: 'Admin Products',
+                path: '/admin/products',
+                username: req.session.user.name
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
 }
 
 exports.getEditProduct = (req, res, next) => {
     const productId = req.params.productId;
     Product.findById(productId)
-    .then(product => {
-        if (!product) {
-            console.log("sorry, no product found for editing.");
-            res.redirect('/');
-        }
+        .then(product => {
+            if (!product) {
+                console.log("sorry, no product found for editing.");
+                res.redirect('/');
+            }
 
-        res.render('admin/edit-product', {
-            pageTitle: 'Admin Edit Product',
-            path: '/admin/edit-product',
-            product: product,
-        });
-    })
-    .catch(err => console.log(err));
+            res.render('admin/edit-product', {
+                pageTitle: 'Admin Edit Product',
+                path: '/admin/edit-product',
+                product: product,
+            });
+        })
+        .catch(err => console.log(err));
 }
 
 exports.postEditProduct = (req, res, next) => {
@@ -70,27 +73,36 @@ exports.postEditProduct = (req, res, next) => {
     const updatedDescription = req.body.description;
 
     Product.findById(productId)
-    .then(product => {
-      product.title = updatedTitle;
-      product.imageUrl = updatedImageUrl;
-      product.price = updatedPrice;
-      product.description = updatedDescription;
-     
-      return product.save();
-    })
-    .then(result => {
-      console.log('UPDATED PRODUCT!');
-      res.redirect('/admin/products');
-    })
-    .catch(err => console.log(err));
+        .then(product => {
+            // make sure only the user who created the product can edit it
+            if (product.userId.toString() !== req.user._id.toString()) {
+                return res.redirect('/');
+            }
+
+            product.title = updatedTitle;
+            product.imageUrl = updatedImageUrl;
+            product.price = updatedPrice;
+            product.description = updatedDescription;
+
+            return product.save()
+                .then(result => {
+                    console.log('UPDATED PRODUCT!');
+                    res.redirect('/admin/products');
+                })
+        })
+        .catch(err => console.log(err));
 }
 
 exports.postDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
-    Product.findByIdAndRemove(productId)
-    .then(() => {
-        console.log('Delete product successfully');
-        res.redirect('/admin/products');
-    })
-    .catch(err => console.log(err));
+    // we need to make sure the product id is matched, and also only the user who created the product can delete it
+    Product.deleteOne({
+            _id: productId,
+            userId: req.user._id
+        })
+        .then(() => {
+            console.log('Delete product successfully');
+            res.redirect('/admin/products');
+        })
+        .catch(err => console.log(err));
 }
