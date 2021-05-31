@@ -173,20 +173,21 @@ exports.postResetPassword = (req, res, next) => {
             }
 
             user.resetToken = token;
-            user.resetTokenExpiration = Date.now() + 3600000 // one hour
+            user.resetTokenExpiration = Date.now() + 3600000; // one hour
             return user.save();
 
         })
         .then(result => {
             // codes come in here means that successfully save the new token and expiration date to the user
 
+            res.redirect('/');
             transporter.sendMail({
                 to: email,
                 from: 'sami.dessertstore@gmail.com',
                 subject: 'Password Reset',
                 html: `
                     <p>You requested a password reset</p>
-                    <p>Click this <a href="http://localhost:5000/reset/${token}>link</a> to set a new password</p>
+                    <p>Click this <a href="http://localhost:5000/reset/${token}>link</a> to set a new password.</p>
                 `
             })
         })
