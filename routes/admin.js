@@ -4,6 +4,10 @@ const rootDir = require('../util/path');
 const authRoute = require('../middleware/auth-protect-route');
 
 const express = require('express');
+const {
+    body
+} = require('express-validator/check');
+
 const router = express.Router();
 
 const adminController = require('../controllers/admin');
@@ -18,7 +22,27 @@ const adminController = require('../controllers/admin');
 router.get('/add-product', authRoute, adminController.getAddProduct);
 
 // /admin/add-product, POST method
-router.post('/add-product', authRoute, adminController.postAddProduct);
+router.post(
+    '/add-product',
+    [
+        body('title')
+        .isString()
+        .isLength({
+            min: 3
+        })
+        .trim(),
+        body('imageUrl').isURL(),
+        body('price').isFloat(),
+        body('description')
+        .isLength({
+            min: 5,
+            max: 400
+        })
+        .trim()
+    ],
+    authRoute,
+    adminController.postAddProduct
+);
 
 // we already put 'admin' in the app.js, so only need 'products' here
 // /admin/products, GET method
@@ -28,7 +52,27 @@ router.get('/products', authRoute, adminController.getProducts);
 router.get('/edit-product/:productId', authRoute, adminController.getEditProduct);
 
 // /admin/edit-product, POST method
-router.post('/edit-product', authRoute, adminController.postEditProduct);
+router.post(
+    '/edit-product',
+    [
+        body('title')
+        .isString()
+        .isLength({
+            min: 3
+        })
+        .trim(),
+        body('imageUrl').isURL(),
+        body('price').isFloat(),
+        body('description')
+        .isLength({
+            min: 5,
+            max: 400
+        })
+        .trim()
+    ],
+    authRoute,
+    adminController.postEditProduct
+);
 
 // /admin/delete-product, POST method
 router.post('/delete-product', authRoute, adminController.postDeleteProduct);
