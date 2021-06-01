@@ -1,5 +1,7 @@
 const path = require('path');
 
+require('dotenv').config({ path: __dirname + '/.env' })
+
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session'); // import this to work with session
@@ -85,7 +87,7 @@ app.use(authRoutes);
 // handle 404 page and wrong url
 app.use('/', errorController.get404Error)
 
-mongoose.connect('mongodb+srv://Jamal:123456abc@cluster0.sqve2.mongodb.net/shop?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB)
     .then(result => {
         // return the first user back
         // User.findOne().then(user => {
