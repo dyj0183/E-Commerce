@@ -7,6 +7,7 @@ exports.getAddProduct = (req, res, next) => {
         pageTitle: 'Admin Add Product',
         path: '/admin/add-product',
         hasError: false,
+        product: {},
         errorMessage: null,
         validationErrors: []
     });
@@ -113,7 +114,7 @@ exports.postEditProduct = (req, res, next) => {
                 title: updatedTitle,
                 imageUrl: updatedImageUrl,
                 price: updatedPrice,
-                description: updatedDesc,
+                description: updatedDescription,
                 _id: productId
             },
             errorMessage: errors.array()[0].msg,
