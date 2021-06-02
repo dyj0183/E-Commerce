@@ -1,9 +1,14 @@
+const { validationResult } = require('express-validator/check');
+
 const Product = require('../models/product'); // import the Product class from models 
 
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
         pageTitle: 'Admin Add Product',
         path: '/admin/add-product',
+        hasError: false,
+        errorMessage: null,
+        validationErrors: []
     });
 }
 
@@ -83,6 +88,9 @@ exports.getEditProduct = (req, res, next) => {
                 pageTitle: 'Admin Edit Product',
                 path: '/admin/edit-product',
                 product: product,
+                hasError: false,
+                errorMessage: null,
+                validationErrors: []
             });
         })
         .catch(err => console.log(err));
