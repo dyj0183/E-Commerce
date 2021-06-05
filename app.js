@@ -1,6 +1,8 @@
 const path = require('path');
 
-require('dotenv').config({ path: __dirname + '/.env' })
+require('dotenv').config({
+    path: __dirname + '/.env'
+})
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -61,11 +63,18 @@ app.use((req, res, next) => {
     }
     User.findById(req.session.user._id)
         .then(user => {
+            // error handling
+            if (!user) {
+                return next();
+            }
             // we still want to use the user returned by "mongoose" when it is logged it, so that we can call all the methods of the "user object"
             req.user = user;
             next();
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            throw new Error(err);
+            // console.log(err);
+        });
 });
 
 /************************************************************************************** 
@@ -84,8 +93,16 @@ app.use('/admin', adminRoutes); // only routes that start with /admin will go in
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get('/500', errorController.get500Error);
+
 // handle 404 page and wrong url
-app.use('/', errorController.get404Error)
+app.use('/', errorController.get404Error);
+
+// this is a centralized error handling middleware
+// special middleware: error handling middleware which has 4 arguments, we use this to handle bigger errors such as server connection error
+app.use((error, req, res, next) => {
+    res.redirect('/500');
+});
 
 mongoose.connect(process.env.MONGODB)
     .then(result => {

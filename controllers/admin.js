@@ -50,10 +50,14 @@ exports.postAddProduct = (req, res, next) => {
     product.save()
         .then(result => {
             console.log('created product successfully');
-            res.redirect('/');
+            res.redirect('/admin/products');
         })
         .catch(err => {
-            console.log(err);
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            // let express knows that an error occurs, and it will skip all the middlewares
+            // and it will move directly to the error handling middleware in app.js
+            return next(error); 
         })
 }
 

@@ -5,7 +5,13 @@ exports.get404Error = (req, res, next) => {
         pageTitle: 'Page Not Found',
         path: '/404',
     });
-
     // this is old, we are using template engine now, so don't need this anymore
     // res.sendFile(path.join(__dirname, 'views', '404.html'));
+}
+
+exports.get500Error = (req, res, next) => {
+    res.status(500).render('500', {
+        pageTitle: '500 Error',
+        path: '/500'
+    })
 }

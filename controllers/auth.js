@@ -67,6 +67,7 @@ exports.postLogin = (req, res, next) => {
     // check the validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log(email); // there is a bug in the code cause it is diaplying "@" when I simply clicked on "Login" without entering any input
       return res.status(422).render('auth/login', {
         path: '/login',
         pageTitle: 'Login',
